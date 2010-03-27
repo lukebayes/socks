@@ -1,7 +1,7 @@
 
 h1. SOCKS are (S)hared (O)bject (C)onnection (K)lass(es)
 
-Granted, the acronym is a bit of a stretch, but the idea here is that we need to transfer information across two SWF files that are running in two different Virtual Machines (AVM1 and AVM2) and LocalConnection is a "big":https://bugs.adobe.com/jira/browse/FP-371 "fat":http://advision.webevents.yahoo.com/cm/LCtest/, "smelly":http://www.actionscript.org/forums/showthread.php3?t=221721 lie.
+Granted, the acronym is a bit of a stretch, but the idea here is that we need to transfer information across two SWF files that are running in two different Virtual Machines (AVM1 and AVM2) and LocalConnection is a "big":https://bugs.adobe.com/jira/browse/FP-371, "fat":http://advision.webevents.yahoo.com/cm/LCtest/, "smelly":http://www.actionscript.org/forums/showthread.php3?t=221721 lie.
 
 This library is essentially an attempt to implement the functionality that LocalConnection claims to have - but does not.
 
