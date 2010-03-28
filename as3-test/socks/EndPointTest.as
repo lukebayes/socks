@@ -36,7 +36,7 @@ package socks {
             clientHandler = async.add(null, 500);
 
             // Connect to both endpoints:
-            server.connect(this);
+            server.connect(this, true);
             client.connect(this);
 
             // Send a message across both endpoints:
