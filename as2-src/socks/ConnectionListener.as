@@ -79,7 +79,6 @@ class socks.ConnectionListener {
 
     private function handleRequest(request:Object):Void {
         validateRequest(request);
-        trace(">> found requests to handle on: " + bucketName + " and: " + request.name);
         delegate[request.name].apply(delegate, request.arguments);
     }
 

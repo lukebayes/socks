@@ -26,12 +26,10 @@ class socks.SharedObjectWrapper extends EventDispatcher {
     }
 
     private function createSharedObject():SharedObject {
-        trace(">> getLocal with: " + bucketName);
         try {
             var so:SharedObject = SharedObject.getLocal(bucketName, path, secure);
             var self = this;
             so.onStatus = function(infoObject:Object):Void {
-                trace(">> SO.onStatus with: " + infoObject);
                 self.netStatusHandler(infoObject);
             }
             return so;
