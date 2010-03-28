@@ -1,8 +1,6 @@
 package {
 	import asunit.ui.TextRunnerUI;
 
-    import socks.ConnectionSenderTest;
-	
 	public class SocksRunner extends TextRunnerUI {
 
 		public function SocksRunner() {
@@ -12,7 +10,6 @@ package {
 			// This allows you to get visual confirmation while developing
 			// visual entities
             run(AllTests);
-			//run(ConnectionListenerTest, 'canConnect');
 		}
 	}
 }

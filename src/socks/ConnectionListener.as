@@ -11,12 +11,16 @@ package socks {
         private var connected:Boolean;
         private var delegate:*;
         private var interval:int;
+        private var path:String;
+        private var secure:Boolean;
         private var timer:Timer;
         private var wrapper:SharedObjectWrapper;
 
-        public function ConnectionListener(bucketName:String, interval:int=DEFAULT_POLLING_INTERVAL) {
+        public function ConnectionListener(bucketName:String, path:String=null, secure:Boolean=false, interval:int=DEFAULT_POLLING_INTERVAL) {
             this.bucketName = bucketName;
-            this.interval = interval;
+            this.interval   = interval;
+            this.path       = path;
+            this.secure     = secure;
             timer = new Timer(interval);
         }
 
@@ -31,7 +35,7 @@ package socks {
             connected = true;
 
             this.delegate = delegate;
-            wrapper = new SharedObjectWrapper(bucketName);
+            wrapper = new SharedObjectWrapper(bucketName, path, secure);
             beginPolling();
         }
 
@@ -39,10 +43,17 @@ package socks {
          * Close the connection (stop polling for requests)
          */
         public function close():void {
+            clear();
             timer.stop();
             timer.removeEventListener(TimerEvent.TIMER, timerHandler);
             delegate = null;
             connected = false;
+        }
+
+        public function clear():void {
+            if(connected) {
+                wrapper.clear();
+            }
         }
 
         private function beginPolling():void {
