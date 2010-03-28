@@ -1,7 +1,7 @@
 package socks {
 
-    import flash.utils.Timer;
-    import flash.events.TimerEvent;
+    import flash.display.Sprite;
+    import flash.events.Event;
 	
 	public class ConnectionListener {
 
@@ -11,9 +11,9 @@ package socks {
         private var connected:Boolean;
         private var delegate:*;
         private var interval:int;
+        private var frameSource:Sprite;
         private var path:String;
         private var secure:Boolean;
-        private var timer:Timer;
         private var wrapper:SharedObjectWrapper;
 
         public function ConnectionListener(bucketName:String, path:String=null, secure:Boolean=false, interval:int=DEFAULT_POLLING_INTERVAL) {
@@ -21,7 +21,7 @@ package socks {
             this.interval   = interval;
             this.path       = path;
             this.secure     = secure;
-            timer = new Timer(interval);
+            frameSource     = new Sprite();
         }
 
         public function connect(delegate:*):void {
@@ -44,8 +44,7 @@ package socks {
          */
         public function close():void {
             clear();
-            timer.stop();
-            timer.removeEventListener(TimerEvent.TIMER, timerHandler);
+            frameSource.removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
             delegate = null;
             connected = false;
         }
@@ -58,11 +57,11 @@ package socks {
 
         private function beginPolling():void {
             getRequests();
-            timer.addEventListener(TimerEvent.TIMER, timerHandler);
-            timer.start();
+            frameSource.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
         }
 
-        private function timerHandler(event:TimerEvent):void {
+        private function enterFrameHandler(event:Event):void {
+            trace(">> enter frame handler!");
             getRequests();
         }
 

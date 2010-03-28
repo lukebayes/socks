@@ -15,7 +15,7 @@ package socks {
         [Before]
 		public function setUp():void {
             var name:String = "ConnectionSenderTest";
-            listener = new ConnectionListener(name, null, false, 1);
+            listener = new ConnectionListener(name, null, false);
             listener.connect(this);
 			sender = new ConnectionSender(name);
 		}
@@ -34,7 +34,7 @@ package socks {
 
         [Test]
         public function canSendARequest():void {
-            asyncHandler = async.add(null);
+            asyncHandler = async.add(null, 500);
             sender.send('doSomethingWith', 'a', 'b', 'c');
         }
 
