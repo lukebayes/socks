@@ -10,6 +10,7 @@ package socks {
         private var delegate:*;
         private var frameSource:Sprite;
         private var path:String;
+        private var requests:Object;
         private var secure:Boolean;
         private var wrapper:SharedObjectWrapper;
 
@@ -31,6 +32,7 @@ package socks {
             connected = true;
 
             this.delegate = delegate;
+            requests = {};
             wrapper = new SharedObjectWrapper(bucketName, path, secure);
             beginPolling();
         }
@@ -41,7 +43,8 @@ package socks {
         public function close():void {
             clear();
             frameSource.removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
-            delegate = null;
+            requests  = {};
+            delegate  = null;
             connected = false;
         }
 
@@ -73,23 +76,42 @@ package socks {
         }
 
         private function handleRequest(request:Object):void {
-            validateRequest(request);
-            delegate[request.name].apply(delegate, request.arguments);
+            if(validateRequest(request)) {
+                delegate[request.name].apply(delegate, request.arguments);
+            }
         }
 
-        private function validateRequest(request:Object):void {
+        private function validateRequest(request:Object):Boolean {
             if(delegate == null) {
                 trace("[ERROR] socks.ConnectionListener received request but has a null delegate!");
+                return false;
+            }
+            if(request == null) {
+                trace("[ERROR] socks.ConnectionListener found an empty request object");
+                return false;
             }
             if(request.name == null) {
                 trace("[ERROR] socks.ConnectionListener received a request with a null name");
+                return false;
             }
             if(delegate[request.name] == null) {
                 trace("[ERROR] socks.ConnectionListener received a request with: " + request.name + ", but the provided delegate (" + delegate + ") does not have that method.");
+                return false;
             }
             if(!(delegate[request.name] is Function)) {
                 trace("[ERROR] socks.ConnectionListener received a request with: " + request.name + ", but the provided delegate (" + delegate + ") has a property instead of a method with that name.");
+                return false;
             }
+            if(requests[request.id]) {
+                // request has already been handled...
+                return false;
+            }
+            else {
+                // store the id to avoid running this request again...
+                requests[request.id] = true;
+            }
+
+            return true;
         }
 	}
 }
