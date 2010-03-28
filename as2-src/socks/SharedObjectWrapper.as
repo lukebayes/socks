@@ -18,21 +18,33 @@ class socks.SharedObjectWrapper extends EventDispatcher {
     private var bucketName:String;
     private var path:String;
     private var secure:Boolean;
-    private var sharedObject:SharedObject;
 
-    public function SharedObjectWrapper(bucketNameString, path:String, secure:Boolean) {
+    public function SharedObjectWrapper(bucketName:String, path:String, secure:Boolean) {
         this.bucketName = bucketName;
         this.path       = path;
         this.secure     = secure;
-        initialize();
     }
 
-    private function initialize():Void{
-        sharedObject = SharedObject.getLocal(bucketName, path, secure);
-        var self = this;
-        sharedObject.onStatus = function(infoObject:Object):Void {
-            self.netStatusHandler(infoObject);
+    private function createSharedObject():SharedObject {
+        trace(">> getLocal with: " + bucketName);
+        try {
+            var so:SharedObject = SharedObject.getLocal(bucketName, path, secure);
+            var self = this;
+            so.onStatus = function(infoObject:Object):Void {
+                trace(">> SO.onStatus with: " + infoObject);
+                self.netStatusHandler(infoObject);
+            }
+            return so;
         }
+        catch(e:Error) {
+            trace(">> There was a problem creating the SharedObject");
+        }
+
+        return null;
+    }
+
+    private function get sharedObject():SharedObject {
+        return createSharedObject();
     }
 
     public function write(propertyName:String, value:Object):Void {
@@ -42,8 +54,7 @@ class socks.SharedObjectWrapper extends EventDispatcher {
 
     public function readAndClear(propertyName:String):Object {
         var result:Object = sharedObject.data[propertyName];
-        sharedObject.data[propertyName] = null;
-        sharedObject.flush();
+        sharedObject.clear();
         return result;
     }
 

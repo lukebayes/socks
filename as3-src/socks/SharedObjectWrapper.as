@@ -3,6 +3,7 @@ package socks {
     import flash.events.Event;
     import flash.events.EventDispatcher;
     import flash.events.NetStatusEvent;
+    import flash.net.ObjectEncoding;
     import flash.net.SharedObject;
     import flash.net.SharedObjectFlushStatus;
 
@@ -18,18 +19,28 @@ package socks {
         private var bucketName:String;
         private var path:String;
         private var secure:Boolean;
-        private var sharedObject:SharedObject;
 
         public function SharedObjectWrapper(bucketName:String, path:String=null, secure:Boolean=false) {
             this.bucketName = bucketName;
             this.path = path;
             this.secure = secure;
-            initialize();
         }
 
-        private function initialize():void {
-            sharedObject = getLocal();
-            sharedObject.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
+        private function createSharedObject():SharedObject {
+            try {
+                var so:SharedObject = SharedObject.getLocal(bucketName, path, secure);
+                so.objectEncoding = ObjectEncoding.AMF0;
+                so.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
+                return so;
+            }
+            catch(e:Error) {
+                trace(">> There was a problem creating the SharedObject at: " + bucketName);
+            }
+            return null;
+        }
+
+        private function get sharedObject():SharedObject {
+            return createSharedObject();
         }
 
         public function write(propertyName:String, value:*):void {
@@ -39,8 +50,7 @@ package socks {
 
         public function readAndClear(propertyName:String):* {
             var result:* = sharedObject.data[propertyName];
-            sharedObject.data[propertyName] = null;
-            sharedObject.flush();
+            sharedObject.clear();
             return result;
         }
 
@@ -50,10 +60,6 @@ package socks {
         
         public function clear():void {
             sharedObject.clear();
-        }
-
-        private function getLocal():SharedObject {
-            return SharedObject.getLocal(bucketName, path, secure);
         }
 
         private function handleWriteResult(result:String):void {

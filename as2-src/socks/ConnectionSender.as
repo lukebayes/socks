@@ -23,6 +23,7 @@ class socks.ConnectionSender {
     // Expects send(methodName:String, ...args:Array):void
     public function send():Void {
         var methodName:String = String(arguments.shift());
+        trace(">>> sending request on: " + bucketName + " with method: " + methodName + " and args: " + arguments);
 
         var requests:Object = wrapper.read('requests') || [];
         var request:Request = new Request(methodName, arguments);

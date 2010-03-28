@@ -3,6 +3,7 @@ import socks.EndPoint;
 
 class AS2Client {
 
+    private var button:MovieClip;
     private var context:MovieClip;
     private var connection:EndPoint;
     private var textField:TextField;
@@ -18,12 +19,13 @@ class AS2Client {
         context._lockroot = true;
 
         drawTextField();
+        drawButton();
         Stage.scaleMode = 'noscale';
         Stage.align = 'TL';
         Stage.addListener(this);
 
-        connection = new EndPoint("DemoConnection", initializePath(), false, 10);
-        connection.connect(this);
+        connection = new EndPoint("DemoConnection", initializePath(), false, 300);
+        connection.connect(this, true); // true == asClient in AS2
         puts(">> ready to connect!");
     }
 
@@ -41,8 +43,7 @@ class AS2Client {
     }
 
     public function randomMethod2(name:String):Void {
-        trace(">> RECEIVED randomMethod2 with: " + name);
-        puts(">> randomMethod called with: " + name);
+        puts(">> randomMethod2 called with: " + name);
     }
 
     private function drawTextField():Void {
@@ -56,6 +57,31 @@ class AS2Client {
         textField.selectable      = true;
         textField.type            = "dynamic";
         textField.wordWrap        = true;
+    }
+
+    private function drawButton():Void {
+        context.createEmptyMovieClip('button', 11);
+        button = context.button;
+        button.clear();
+        button.beginFill(0x00ff00);
+        button.lineTo(80, 0);
+        button.lineTo(80, 20);
+        button.lineTo(0, 20);
+        button.lineTo(0, 0);
+        button.endFill();
+
+        button._y = 10;
+        button._x = Stage.width - 100;
+
+        var self = this;
+        button.enabled = true;
+        button.onRelease = function():Void {
+            self.sendPuts();
+        }
+    }
+
+    public function sendPuts():Void {
+        connection.send('puts', "SOME MESSAGE");
     }
 
     private function onResize():Void {

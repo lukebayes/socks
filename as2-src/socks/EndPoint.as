@@ -24,17 +24,19 @@ class socks.EndPoint {
         this.secure     = secure;
     } 
 
-    public function connect(delegate:Object):Void {
+    public function connect(delegate:Object, asClient:Boolean):Void {
         var listenerBucket:String;
         var senderBucket:String;
         // If we're the first connection at this name,
         // we're the 'server', otherwise, we're a 'client'
         // set up your keys accordingly...
-        if(connectionAlreadyEstablished()) {
+        if(asClient || connectionAlreadyEstablished()) {
+            trace(">> Connecting as Client");
             listenerBucket = bucketName + "-client";
             senderBucket = bucketName + "-server";
         }
         else {
+            trace(">> Connecting as Server");
             listenerBucket = bucketName + "-server";
             senderBucket = bucketName + "-client";
         }

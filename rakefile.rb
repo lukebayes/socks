@@ -7,7 +7,7 @@ namespace :as2 do
 
   sprout 'as2'
 
-  mtasc 'bin/SocksAs2Client.swf' do |t|
+  mtasc 'bin/AS2Client.swf' do |t|
     t.main = true
     t.header = "780:550:24:ffcc00"
     t.input = "as2-src/AS2Client.as"
@@ -16,7 +16,7 @@ namespace :as2 do
   end
 
   desc "Compile and run the ActionScript 2 client"
-  flashplayer :test => 'bin/SocksAs2Client.swf'
+  flashplayer :test => 'bin/AS2Client.swf'
 end
 
 ############################################

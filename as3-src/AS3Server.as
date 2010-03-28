@@ -24,7 +24,7 @@ package {
         }
 
         private function initialize():void {
-            connection = new EndPoint("DemoConnection", initializePath(), false, 10);
+            connection = new EndPoint("DemoConnection", initializePath(), false, 300);
             connection.connect(this, true);
             sendButton.addEventListener(MouseEvent.CLICK, sendButtonClickHandler);
         }
