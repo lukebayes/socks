@@ -1,5 +1,5 @@
 package socks {
-	
+
 	public class EndPoint {
 
         private var bucketName:String;
@@ -9,9 +9,8 @@ package socks {
         private var path:String;
         private var secure:Boolean;
         private var sender:ConnectionSender;
-        private var wrapper:SharedObjectWrapper;
 		
-		public function EndPoint(bucketName:String, path:String=null, secure:Boolean=false, interval:int=ConnectionListener.DEFAULT_POLLING_INTERVAL) {
+		public function EndPoint(bucketName:String, path:String=null, secure:Boolean=false, interval:int=50) {
             if(bucketName == null) {
                 throw new Error("EndPoint cannot be created without a valid bucketName");
             }
@@ -21,19 +20,21 @@ package socks {
             this.secure     = secure;
 		} 
 
-        public function connect(delegate:*):void {
+        public function connect(delegate:*, asServer:Boolean=false):void {
             var listenerBucket:String;
             var senderBucket:String;
             // If we're the first connection at this name,
             // we're the 'server', otherwise, we're a 'client'
             // set up your keys accordingly...
-            if(connectionAlreadyEstablished()) {
-                listenerBucket = bucketName + "-client";
-                senderBucket = bucketName + "-server";
-            }
-            else {
+            if(asServer) {
+                trace(">> Creating Server EndPoint now");
                 listenerBucket = bucketName + "-server";
                 senderBucket = bucketName + "-client";
+            }
+            else {
+                trace(">> Creating Client EndPoint now");
+                listenerBucket = bucketName + "-client";
+                senderBucket = bucketName + "-server";
             }
 
             listener = new ConnectionListener(listenerBucket, path, secure, interval);
@@ -55,24 +56,9 @@ package socks {
             }
         }
 
-        private function writeConnectionToken():void {
-            wrapper.write('socks-connection-token', true);
-        }
-
         private function clear():void {
-            wrapper.clear();
             listener.clear();
             sender.clear();
-        }
-
-        private function connectionAlreadyEstablished():Boolean {
-            wrapper = new SharedObjectWrapper(bucketName, path, secure);
-            if(wrapper.read('socks-connection-token')) {
-                return true;
-            }
-
-            writeConnectionToken();
-            return false;
         }
 	}
 }

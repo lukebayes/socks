@@ -14,41 +14,55 @@ class AS2Client {
     }
 
     public function AS2Client(context:MovieClip) {
-        trace(">> AS2Client instantiated");
         this.context = context;
         context._lockroot = true;
 
         drawTextField();
+        Stage.scaleMode = 'noscale';
+        Stage.align = 'TL';
+        Stage.addListener(this);
 
-        connection = new EndPoint("DemoConnection");
+        connection = new EndPoint("DemoConnection", initializePath(), false, 10);
         connection.connect(this);
-        puts(">> READY");
+        puts(">> ready to connect!");
     }
 
-    public function connectedHandler():Void {
-        trace(">> connected handler!");
-        puts(">> CONNECTED!!");
+    private function initializePath():String {
+        var path:String = context._url;
+        var parts:Array = path.split('/');
+        parts.pop();
+        path = parts.join('/');
+        puts(path);
+        return path;
     }
 
-    private function puts(message:String):Void {
+    public function puts(message:String):Void {
         textField.text += message + "\n\n";
     }
 
+    public function randomMethod2(name:String):Void {
+        trace(">> RECEIVED randomMethod2 with: " + name);
+        puts(">> randomMethod called with: " + name);
+    }
+
     private function drawTextField():Void {
-        trace(">> Drawing with: " + context);
-        var initObject:Object = {
-            background : true,
-            border     : true,
-            multiline  : true,
-            selectable : true,
-            type       : "dynamic",
-            wordWrap   : true
-        }
-        context.createTextField('textField', 10, 5, 5, 200, 300, initObject);
-        textField = context.textField;
-        
-        trace(">> textField: " + textField);
+        context.createTextField('textField', 10, 5, 5, Stage.width - 10, Stage.height - 10);
+        textField                 = context.textField;
+        textField.background      = true;
+        textField.backgroundColor = 0xFFFFFF;
+        textField.border          = true;
+        textField.borderColor     = 0x333333;
+        textField.multiline       = true;
+        textField.selectable      = true;
+        textField.type            = "dynamic";
+        textField.wordWrap        = true;
+    }
+
+    private function onResize():Void {
+        textField._x = 5;
+        textField._y = 5;
+        textField._width = Stage.width - 10;
+        textField._height = Stage.height - 10;
     }
 }
-
 
