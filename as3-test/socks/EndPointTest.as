@@ -16,8 +16,8 @@ package socks {
 
         [Before]
 		public function setUp():void {
-			server = new EndPoint("EndPointTest", null, false, 0);
-            client = new EndPoint("EndPointTest", null, false, 0);
+			server = new EndPoint("EndPointTest");
+            client = new EndPoint("EndPointTest");
 		}
 
         [After]
@@ -32,8 +32,8 @@ package socks {
         [Test]
 		public function canConnectTwoWay():void {
             // Set up two async handlers:
-            serverHandler = async.add(null, 500);
-            clientHandler = async.add(null, 500);
+            serverHandler = async.add(null, 200);
+            clientHandler = async.add(null, 200);
 
             // Connect to both endpoints:
             server.connect(this, true);

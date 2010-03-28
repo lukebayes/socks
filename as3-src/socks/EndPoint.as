@@ -4,18 +4,16 @@ package socks {
 
         private var bucketName:String;
         private var connected:Boolean;
-        private var interval:int;
         private var listener:ConnectionListener;
         private var path:String;
         private var secure:Boolean;
         private var sender:ConnectionSender;
 		
-		public function EndPoint(bucketName:String, path:String=null, secure:Boolean=false, interval:int=50) {
+		public function EndPoint(bucketName:String, path:String=null, secure:Boolean=false) {
             if(bucketName == null) {
                 throw new Error("EndPoint cannot be created without a valid bucketName");
             }
             this.bucketName = bucketName;
-            this.interval   = interval;
             this.path       = path;
             this.secure     = secure;
 		} 
@@ -37,7 +35,7 @@ package socks {
                 senderBucket = bucketName + "-server";
             }
 
-            listener = new ConnectionListener(listenerBucket, path, secure, interval);
+            listener = new ConnectionListener(listenerBucket, path, secure);
             sender = new ConnectionSender(senderBucket, path, secure);
             listener.connect(delegate);
             connected = true;

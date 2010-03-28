@@ -16,7 +16,7 @@ package socks {
         [Before]
 		public function setUp():void {
             bucket = "ConnectionListenerTest";
-			listener = new ConnectionListener(bucket, null, false, 1);
+			listener = new ConnectionListener(bucket, null, false);
 
             listener.connect(this);
             wrapper = new SharedObjectWrapper(bucket);

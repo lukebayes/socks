@@ -5,20 +5,16 @@ package socks {
 	
 	public class ConnectionListener {
 
-        public static const DEFAULT_POLLING_INTERVAL:int = 50;
-
         private var bucketName:String;
         private var connected:Boolean;
         private var delegate:*;
-        private var interval:int;
         private var frameSource:Sprite;
         private var path:String;
         private var secure:Boolean;
         private var wrapper:SharedObjectWrapper;
 
-        public function ConnectionListener(bucketName:String, path:String=null, secure:Boolean=false, interval:int=DEFAULT_POLLING_INTERVAL) {
+        public function ConnectionListener(bucketName:String, path:String=null, secure:Boolean=false) {
             this.bucketName = bucketName;
-            this.interval   = interval;
             this.path       = path;
             this.secure     = secure;
             frameSource     = new Sprite();
@@ -61,7 +57,6 @@ package socks {
         }
 
         private function enterFrameHandler(event:Event):void {
-            trace(">> enter frame handler!");
             getRequests();
         }
 
