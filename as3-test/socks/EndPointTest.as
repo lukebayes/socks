@@ -32,8 +32,8 @@ package socks {
         [Test]
 		public function canConnectTwoWay():void {
             // Set up two async handlers:
-            serverHandler = async.add(null, 200);
-            clientHandler = async.add(null, 200);
+            serverHandler = async.add(null, 500);
+            clientHandler = async.add(null, 500);
 
             // Connect to both endpoints:
             server.connect(this, true);

@@ -23,6 +23,6 @@ package socks {
 		public function canInstantiate():void {
 			assertTrue("connection is Connection", connection is Connection);
 		}
-
 	}
 }
+

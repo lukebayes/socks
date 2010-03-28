@@ -47,6 +47,15 @@ package socks {
             assertEquals("Should not receive actual array by reference...", 2, request.arguments.length);
         }
 
+        [Test]
+        public function testGenerateId():void {
+            request = new Request('foo');
+            var id:String = request.id;
+            assertNotNull(id);
+            assertTrue("Request id should be sort of long", id.length > 5);
+            assertTrue("Request id should include a dash", id.match(/\d*-\d*/));
+        }
+
         private function writeThenReadRequests():Array {
             var a:Request = new Request('aye');
             var b:Request = new Request('bee', [ 1, 'two', true ]);
