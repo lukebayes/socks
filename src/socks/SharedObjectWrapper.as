@@ -37,6 +37,13 @@ package socks {
             handleWriteResult(sharedObject.flush());
         }
 
+        public function readAndClear(propertyName:String):* {
+            var result:* = sharedObject.data[propertyName];
+            sharedObject.data[propertyName] = null;
+            sharedObject.flush();
+            return result;
+        }
+
         public function read(propertyName:String):* {
             return sharedObject.data[propertyName];
         }

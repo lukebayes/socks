@@ -1,8 +1,12 @@
 package socks {
 
     import asunit.asserts.*;
+    import asunit.framework.IAsync;
 
 	public class ConnectionListenerTest {
+
+        [Inject]
+        public var async:IAsync;
 
         private var bucket:String;
 		private var listener:ConnectionListener;
@@ -10,8 +14,10 @@ package socks {
 
         [Before]
 		public function setUp():void {
-            bucket = "ListenerName";
-			listener = new ConnectionListener(bucket);
+            bucket = "ConnectionListenerTest";
+			listener = new ConnectionListener(bucket, 5);
+            listener.delegate = this;
+
             wrapper = new SharedObjectWrapper(bucket);
 		}
 
@@ -30,8 +36,22 @@ package socks {
 		}
 
         [Test]
-        public function testConnect():void {
+        public function canConnect():void {
             listener.connect();
+        }
+
+        [Test]
+        public function canDelegate():void {
+            listener.connect();
+            async.add(null); // Make async wait - we'll clear it manually in a moment...
+
+            var request:Request = new Request('delegatedMethod', 42);
+            wrapper.write('requests', [request]);
+        }
+
+        public function delegatedMethod(arg:Number):void {
+            trace(">> delegated method called!");
+            async.cancelPending();
         }
 	}
 }

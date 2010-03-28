@@ -8,6 +8,8 @@ package socks {
 
         public static const DEFAULT_POLLING_INTERVAL:int = 50;
 
+        public var delegate:*;
+
         private var bucketName:String;
         private var wrapper:SharedObjectWrapper;
 
@@ -45,7 +47,36 @@ package socks {
         }
 
         private function getRequests():void {
-            trace(">> get requests");
+            handleRequests( wrapper.readAndClear('requests') );
+        }
+
+        private function handleRequests(requests:Array):void {
+            if(requests == null) return;
+            trace(">> handling requests with: " + requests.length);
+            var len:int = requests.length;
+            for(var i:int; i < len; i++) {
+                handleRequest(requests[i]);
+            }
+        }
+
+        private function handleRequest(request:Request):void {
+            trace(">> handle request; " + request.name);
+            validateRequest(request);
+        }
+
+        private function validateRequest(request:Request):void {
+            if(delegate == null) {
+                trace("[ERROR] socks.ConnectionListener received request but has a null delegate!");
+            }
+            if(request.name == null) {
+                trace("[ERROR] socks.ConnectionListener received a request with a null name");
+            }
+            if(delegate[request.name] == null) {
+                trace("[ERROR] socks.ConnectionListener received a request with: " + request.name + ", but the provided delegate (" + delegate + ") does not have that method.");
+            }
+            if(!(delegate[request.name] is Function)) {
+                trace("[ERROR] socks.ConnectionListener received a request with: " + request.name + ", but the provided delegate (" + delegate + ") has a property instead of a method with that name.");
+            }
         }
 	}
 }

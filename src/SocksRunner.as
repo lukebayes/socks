@@ -1,7 +1,7 @@
 package {
 	import asunit.ui.TextRunnerUI;
 
-    import socks.SharedObjectWrapperTest;
+    import socks.ConnectionListenerTest;
 	
 	public class SocksRunner extends TextRunnerUI {
 
@@ -11,7 +11,8 @@ package {
 			// execute setUp(), the method and NOT tearDown.
 			// This allows you to get visual confirmation while developing
 			// visual entities
-			run(AllTests);
+            run(AllTests);
+			//run(ConnectionListenerTest, 'canConnect');
 		}
 	}
 }

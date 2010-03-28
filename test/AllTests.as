@@ -9,6 +9,7 @@ package {
     import socks.ConnectionListenerTest;
     import socks.ConnectionSenderTest;
     import socks.ConnectionTest;
+    import socks.RequestTest;
     import socks.SharedObjectWrapperTest;
 
     [Suite]
@@ -17,6 +18,7 @@ package {
         public var socks_ConnectionListenerTest:socks.ConnectionListenerTest;
         public var socks_ConnectionSenderTest:socks.ConnectionSenderTest;
         public var socks_ConnectionTest:socks.ConnectionTest;
+        public var socks_RequestTest:socks.RequestTest;
         public var socks_SharedObjectWrapperTest:socks.SharedObjectWrapperTest;
 	}
 }
