@@ -1,5 +1,7 @@
 package {
 	import asunit.ui.TextRunnerUI;
+
+    import socks.SharedObjectWrapperTest;
 	
 	public class SocksRunner extends TextRunnerUI {
 
@@ -9,7 +11,7 @@ package {
 			// execute setUp(), the method and NOT tearDown.
 			// This allows you to get visual confirmation while developing
 			// visual entities
-			run(AllTests, null);
+			run(AllTests);
 		}
 	}
 }

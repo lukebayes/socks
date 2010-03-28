@@ -11,6 +11,7 @@ project_model :model do |m|
 end
 
 mxmlc 'bin/SocksRunner.swf' do |t|
+  t.verbose_stacktraces = true
   t.default_size = '900 500'
   t.input = 'src/SocksRunner.as'
   t.library_path << 'lib/asunit4-alpha.swc'

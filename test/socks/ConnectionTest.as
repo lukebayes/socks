@@ -3,15 +3,19 @@ package socks {
     import asunit.asserts.*;
 
 	public class ConnectionTest {
+
 		private var connection:Connection;
+        private var name:String;
 
         [Before]
 		public function setUp():void {
-			connection = new Connection();
+            name = "TestConnection";
+			connection = new Connection(name);
 		}
 
         [After]
 		public function tearDown():void {
+            connection.close();
 			connection = null;
 		}
 
@@ -20,9 +24,5 @@ package socks {
 			assertTrue("connection is Connection", connection is Connection);
 		}
 
-        [Test]
-		public function ensureExecution():void {
-			assertTrue("Failing test", true);
-		}
 	}
 }

@@ -6,12 +6,18 @@ package {
 	 * modifications will be lost!
 	 */
     
+    import socks.ConnectionListenerTest;
+    import socks.ConnectionSenderTest;
     import socks.ConnectionTest;
+    import socks.SharedObjectWrapperTest;
 
     [Suite]
 	public class AllTests {
         
+        public var socks_ConnectionListenerTest:socks.ConnectionListenerTest;
+        public var socks_ConnectionSenderTest:socks.ConnectionSenderTest;
         public var socks_ConnectionTest:socks.ConnectionTest;
+        public var socks_SharedObjectWrapperTest:socks.SharedObjectWrapperTest;
 	}
 }
 
