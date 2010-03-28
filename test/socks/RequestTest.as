@@ -33,24 +33,24 @@ package socks {
 
         [Test]
         public function canAssignSingleArgument():void {
-            request = new Request('foo', 'a');
-            assertEquals('a', request.arguments.shift());
+            request = new Request('foo', ['a']);
+            assertEquals('a', request.arguments[0]);
         }
 
 	    [Test]
         public function canAssignDoubleArgument():void {
-            request = new Request('foo', 'a', 'b');
+            request = new Request('foo', ['a', 'b']);
             var args:Array = request.arguments;
-            assertEquals('a', args.shift());
-            assertEquals('b', args.shift());
+            assertEquals('a', args[0]);
+            assertEquals('b', args[1]);
 
             assertEquals("Should not receive actual array by reference...", 2, request.arguments.length);
         }
 
         private function writeThenReadRequests():Array {
             var a:Request = new Request('aye');
-            var b:Request = new Request('bee', 1, 'two', true);
-            var c:Request = new Request('cee', {name:'foo'}, ['bar']);
+            var b:Request = new Request('bee', [ 1, 'two', true ]);
+            var c:Request = new Request('cee', [ {name:'foo'}, ['bar'] ]);
             wrapper.write('requests', [a, b, c]);
             return wrapper.read('requests');
         }

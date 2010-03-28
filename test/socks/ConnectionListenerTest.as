@@ -8,6 +8,7 @@ package socks {
         [Inject]
         public var async:IAsync;
 
+        private var asyncHandler:Function;
         private var bucket:String;
 		private var listener:ConnectionListener;
         private var wrapper:SharedObjectWrapper;
@@ -15,9 +16,9 @@ package socks {
         [Before]
 		public function setUp():void {
             bucket = "ConnectionListenerTest";
-			listener = new ConnectionListener(bucket, 5);
-            listener.delegate = this;
+			listener = new ConnectionListener(bucket, 1);
 
+            listener.connect(this);
             wrapper = new SharedObjectWrapper(bucket);
 		}
 
@@ -36,22 +37,22 @@ package socks {
 		}
 
         [Test]
-        public function canConnect():void {
-            listener.connect();
-        }
-
-        [Test]
         public function canDelegate():void {
-            listener.connect();
-            async.add(null); // Make async wait - we'll clear it manually in a moment...
+            var handler:Function = function(arg:Number):void {
+                assertEquals(42, arg);
+            }
 
-            var request:Request = new Request('delegatedMethod', 42);
+            asyncHandler = async.add(handler);
+
+            // Write a request to the SharedObject so that the listener
+            // can pick it up...
+            var request:Request = new Request('delegatedMethod', [42]);
             wrapper.write('requests', [request]);
         }
 
         public function delegatedMethod(arg:Number):void {
-            trace(">> delegated method called!");
-            async.cancelPending();
+            // Call the asyncHandler so that the tests can continue
+            asyncHandler(arg);
         }
 	}
 }

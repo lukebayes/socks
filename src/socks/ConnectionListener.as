@@ -1,6 +1,5 @@
 package socks {
 
-    import flash.net.SharedObject;
     import flash.utils.Timer;
     import flash.events.TimerEvent;
 	
@@ -8,13 +7,12 @@ package socks {
 
         public static const DEFAULT_POLLING_INTERVAL:int = 50;
 
-        public var delegate:*;
-
         private var bucketName:String;
-        private var wrapper:SharedObjectWrapper;
-
+        private var connected:Boolean;
+        private var delegate:*;
         private var interval:int;
         private var timer:Timer;
+        private var wrapper:SharedObjectWrapper;
 
         public function ConnectionListener(bucketName:String, interval:int=DEFAULT_POLLING_INTERVAL) {
             this.bucketName = bucketName;
@@ -22,7 +20,17 @@ package socks {
             timer = new Timer(interval);
         }
 
-        public function connect():void {
+        public function connect(delegate:*):void {
+            if(delegate == null) {
+                throw new Error("ConnectionListener.connect requires a non-null delegate");
+            }
+            if(connected) {
+                throw new Error("ConnectionListener.connect called twice without first closing the connection");
+            }
+
+            connected = true;
+
+            this.delegate = delegate;
             wrapper = new SharedObjectWrapper(bucketName);
             beginPolling();
         }
@@ -32,17 +40,18 @@ package socks {
          */
         public function close():void {
             timer.stop();
+            timer.removeEventListener(TimerEvent.TIMER, timerHandler);
+            delegate = null;
+            connected = false;
         }
 
         private function beginPolling():void {
             getRequests();
-
             timer.addEventListener(TimerEvent.TIMER, timerHandler);
             timer.start();
         }
 
         private function timerHandler(event:TimerEvent):void {
-            trace(">> timer handler with: " + event.target);
             getRequests();
         }
 
@@ -52,19 +61,18 @@ package socks {
 
         private function handleRequests(requests:Array):void {
             if(requests == null) return;
-            trace(">> handling requests with: " + requests.length);
             var len:int = requests.length;
             for(var i:int; i < len; i++) {
                 handleRequest(requests[i]);
             }
         }
 
-        private function handleRequest(request:Request):void {
-            trace(">> handle request; " + request.name);
+        private function handleRequest(request:Object):void {
             validateRequest(request);
+            delegate[request.name].apply(delegate, request.arguments);
         }
 
-        private function validateRequest(request:Request):void {
+        private function validateRequest(request:Object):void {
             if(delegate == null) {
                 trace("[ERROR] socks.ConnectionListener received request but has a null delegate!");
             }

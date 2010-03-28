@@ -3,21 +3,12 @@ package socks {
 	public class Request {
 
         public var name:String;
-        public var _arguments:Array;
+        public var arguments:Array;
 		
-		public function Request(name:String=null, ...args:*) {
+		public function Request(name:String=null, args:Array=null) {
             this.name = name;
-            this._arguments = args ||= [];
+            this.arguments = args || [];
 		} 
-
-        public function get arguments():Array {
-            var result:Array = [];
-            var len:int = _arguments.length;
-            for(var i:int; i < len; i++) {
-                result.push(_arguments[i]);
-            }
-            return result;
-        }
 	}
 }
 

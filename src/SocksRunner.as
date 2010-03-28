@@ -1,7 +1,7 @@
 package {
 	import asunit.ui.TextRunnerUI;
 
-    import socks.ConnectionListenerTest;
+    import socks.ConnectionSenderTest;
 	
 	public class SocksRunner extends TextRunnerUI {
 

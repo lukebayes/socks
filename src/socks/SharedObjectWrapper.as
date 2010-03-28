@@ -68,10 +68,8 @@ package socks {
         }
 
         private function netStatusHandler(event:NetStatusEvent):void {
-            trace(">> netStatusHandler with: " + event.info.code);
             switch(event.info.code) {
             case FLUSH_SUCCESS :
-                trace(">> async flush succeeded!");
                 dispatchEvent(new Event(SUCCESS));
                 break;
             case FLUSH_FAILURE :
